@@ -46,3 +46,9 @@ Some relevant flags that can be added to control the training and application of
 --wandb_project=name_of_the_wandb_project 
 
 --lam=desired_lambda (if a value is given, only a model with that value of lambda as multiplier will be computed, otherwise multiple models will be computed for several predefined values of the multiplier)
+
+Finally, a (hopefully) fully functioning command would be:
+
+NOTE: you might have to download the datasets first, look at the function datasetPreprocessing in datatsets.py for details on this part, specifically the argument "path".
+
+python3 main.py --method=CvM --offline --batch_size=2048 --epochs=20 --dataset=adult --seed=0 --finetuning
