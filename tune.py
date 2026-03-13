@@ -10,6 +10,10 @@ from .train import train_model, set_seed
 from pathlib import Path
 import utils
 import datasets
+from pathlib import Path
+import optuna
+from .wandb_utils import init_wandb_run, log_yaml_artifact
+from .train import train_model, set_seed
 
 SEARCH_SPACE_FILE = Path("search_space.yaml")
 
@@ -38,12 +42,6 @@ def run_optuna(args, train_dataset, val_dataset):
     print("Best params:", study.best_params)
     print("Best value:", study.best_value)
 
-
-from pathlib import Path
-import optuna
-
-from .wandb_utils import init_wandb_run, log_yaml_artifact
-from .train import train_model, set_seed
 
 def objective(trial, args, train_dataset, val_dataset):
 

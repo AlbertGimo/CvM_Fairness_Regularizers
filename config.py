@@ -1,9 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Optional, List
+from typing import Optional, List, Union
 
 
 @dataclass
 class TrainConfig:
+    """
+    Configuration for training a model. This includes both hyperparameters and other settings.
+    """
     # training
     epochs: int = 20
     batch_size: int = 64
@@ -30,6 +33,9 @@ class TrainConfig:
 
 @dataclass
 class WandbConfig:
+    """
+    Configuration for Weights & Biases logging. 
+    """
     project: str = "ml-project"
     entity: Optional[str] = None
     group: Optional[str] = None
@@ -39,9 +45,21 @@ class WandbConfig:
 
 @dataclass
 class OptunaConfig:
+    """
+    Configuration for Optuna hyperparameter optimization.
+    Note: If pareto is True, direction should be a list of directions (e.g. ["minimize", "maximize"]) instead of a single string.
+    """
     study_name: str = "ml-study"
     storage: str = "sqlite:///optuna_study.db"
-    direction: str = "minimize"
-    timeout: Optional[int] = None
     pareto: bool = True
+    direction: Union[str, List[str]] = None
+    timeout: Optional[int] = None
     n_trials: Optional[int] = None
+
+    # function to set default direction based on pareto setting
+    def __post_init__(self):
+        if self.direction is None:
+            if self.pareto:
+                self.direction = ["maximize", "minimize"]
+            else:
+                self.direction = "maximize"

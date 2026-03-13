@@ -119,7 +119,7 @@ def load_acs_data(path = '../../dataset/acs/raw', target_attr="income",
     return X, y, s
 
 
-def datasetPreprocessing(path, dataset_name, split_list, seed,
+def datasetPreprocessing(dataset_name, split_list, seed, path="./../dataset/",
                   sensitive_attribute=None, verbose=False):
     """
     Split and preprocess a tabular dataset. Return the training, validation, and test sets as PyTorch tensors.

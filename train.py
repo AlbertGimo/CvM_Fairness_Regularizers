@@ -314,7 +314,6 @@ def evaluate(model, loader, device, args, utility_obj=None, fairness_obj=None, o
                 total += score.item()
 
         return total / len(loader)
-    
 
 from sklearn.metrics import accuracy_score
 from fairlearn.metrics import demographic_parity_difference, equalized_odds_difference
@@ -329,9 +328,9 @@ def get_obj_functions(args, incline = 50.0):
     Note: Higher values of incline will put more emphasis on optimizing for fairness.
     
     Outputs:
-    - If args.pareto is True, returns a tuple of functions (utility_obj, fairness_obj, None).
+    - If args.pareto is True, returns a tuple of functions (None, utility_obj, fairness_obj).
         Utility_obj is the function to compute the utility metric and fairness_obj is the function to compute the fairness metric.
-    - If args.pareto is False, returns a tuple (None, None, obj) where obj function that combines utility and fairness.
+    - If args.pareto is False, returns a tuple (obj, None, None) where obj function that combines utility and fairness.
     """
     
     if args.pareto:
