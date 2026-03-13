@@ -15,24 +15,18 @@ def create_study(cfg: OptunaConfig):
         sampler = optuna.samplers.NSGAIISampler(
             seed=42,
         )
-
-        study = optuna.create_study(
-            study_name=cfg.study_name,
-            storage=cfg.storage,
-            directions=cfg.direction,
-            sampler=sampler,
-            load_if_exists=True
-        )
     else: 
 
         sampler = optuna.samplers.TPESampler(seed=42)
 
-        study = optuna.create_study(
+    study = optuna.create_study(
             study_name=cfg.study_name,
             storage=cfg.storage,
             direction=cfg.direction,
+            sampler=sampler
             load_if_exists=True,
         )
+        
 
     return study
 

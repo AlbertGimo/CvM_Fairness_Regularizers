@@ -12,10 +12,10 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from tabulate import tabulate
 
 
-class PandasDataSet(TensorDataset):
+class TensorizedDataSet(TensorDataset):
     def __init__(self, *dataframes):
         tensors = (self._df_to_tensor(df) for df in dataframes)
-        super(PandasDataSet, self).__init__(*tensors)
+        super(TensorizedDataSet, self).__init__(*tensors)
 
     def _df_to_tensor(self, df):
         if isinstance(df, pd.Series):
@@ -120,7 +120,7 @@ def load_acs_data(path = '../../dataset/acs/raw', target_attr="income",
 
 
 def datasetPreprocessing(path, dataset_name, split_list, seed,
-                  sensitive_attribute=None, to_tensors=True, verbose=False):
+                  sensitive_attribute=None, verbose=False):
     """
     Split and preprocess a tabular dataset. Return the training, validation, and test sets as PyTorch tensors.
     """
@@ -140,9 +140,6 @@ def datasetPreprocessing(path, dataset_name, split_list, seed,
     categorical_cols = X.select_dtypes("string").columns
     if len(categorical_cols) > 0:
         X = pd.get_dummies(X, columns=categorical_cols)
-
-    n_features = X.shape[1]
-    n_classes = len(np.unique(y))
 
     # Performing training, validation, and test set partitioning
     if seed is not None:
@@ -198,13 +195,11 @@ def datasetPreprocessing(path, dataset_name, split_list, seed,
         print("[DEBUG] X_train.shape: ", X_train.shape, " y_train.shape: ", y_train.shape,
             " s_train.shape: ", s_train.shape)
     
-    if to_tensors:
-        # print(type(X_train.values[0]), type(y_train.values[0]), type(s_train.values[0]))
-        # print(X_train.values[0], y_train.values[0], s_train.values[0])
-        train_data = PandasDataSet(X_train, y_train, s_train)
-        val_data = PandasDataSet(X_val, y_val, s_val)
-        test_data = PandasDataSet(X_test, y_test, s_test) 
-        return train_data, val_data, test_data, dataset_stats
+    # Convert to PyTorch tensors
+    train_data = TensorizedDataSet(X_train, y_train, s_train)
+    val_data = TensorizedDataSet(X_val, y_val, s_val)
+    test_data = TensorizedDataSet(X_test, y_test, s_test) 
+    return train_data, val_data, test_data, dataset_stats
         # X_train = torch.from_numpy(X_train.values).float()
         # y_train = torch.from_numpy(y_train.values).float().view(-1, 1)
         # s_train = torch.from_numpy(s_train.values).float()
